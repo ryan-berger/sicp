@@ -31,8 +31,7 @@
 (define (sum-biggest a b c)
   (if (>= a b)
       (+ (square a) (square (max b c)))
-      (+ (square b) (square (max a c)))
-      ))
+      (+ (square b) (square (max a c)))))
 
 ; 1.4
 ; if b > 0, then we add the operands of a, b together
@@ -203,4 +202,49 @@
 (f-11 5)
 
 ; 1.12
-; (define (pascal n))
+;     1
+;    1 1
+;   1 2 1
+;  1 3 3 1
+; 1 4 6 4 1
+;
+;  1  
+; 1 1 
+;1 2 1
+(define (pascal row col)
+  (cond ((< col 0) 0)
+        ((or (= row 0) (= row col)) 1)
+        (else (+ (pascal (- row 1) (- col 1))
+                 (pascal (- row 1) col)))))
+
+
+(define (display-triangle n)
+  (define col-count (+ n (- n 1)))  
+  (define (get-col r c)
+    (define space (- n r 1))
+    (if (and (>= c space) (<= c (- col-count space)) (= (modulo (- c space) 2) 0))
+        (display (pascal r (quotient (- c space) 2)))
+        (display " ")))
+
+  (define (iter from to callback)
+    (if (< from to)
+        (begin
+          (callback to)
+          (iter from (+ to 1)))))
+
+  (define (iter-col r c)
+    (if (< c col-count)
+        (begin
+           (get-col r c)
+           (iter-col r (+ c 1)))))
+
+  (define (iter-row r)
+     (if (< r n)
+         (begin
+           (iter-col r 0)
+           (display "\n")
+           (iter-row (+ 1 r)))))
+  
+  (iter-row 0))
+
+(display-triangle 7)
